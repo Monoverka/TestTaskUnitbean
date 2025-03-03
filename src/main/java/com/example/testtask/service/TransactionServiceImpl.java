@@ -1,5 +1,6 @@
 package com.example.testtask.service;
 
+import com.example.testtask.dto.TransactionDTO;
 import com.example.testtask.exception.BookNotFoundException;
 import com.example.testtask.model.TransactionType;
 import com.example.testtask.model.Transactions;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,7 +32,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reader does not exist");
         }
 
-        //transaction.setId(null);
+        transaction.setId(null);
         transaction.setDateTime(LocalDateTime.now());
 
         Transactions lastTransaction = transactionRepo.findLastByBookId(transaction.getBook().getId());
@@ -53,16 +55,24 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transactions findById(Long id) {
-        return transactionRepo.findById(id).orElse(null);
+    public TransactionDTO findById(Long id) {
+        Transactions transaction = transactionRepo.findById(id).orElse(null);
+        if (transaction == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No transaction found");
+        }
+        return new TransactionDTO(transaction);
     }
 
     @Override
-    public List<Transactions> findAll() {
+    public List<TransactionDTO> findAll() {
         List<Transactions> allTransactions = transactionRepo.findAll();
         if (allTransactions.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No transactions found");
         }
-        return transactionRepo.findAll();
+        List<TransactionDTO> transactionDTOS = new ArrayList<>();
+        allTransactions.forEach(transaction -> transactionDTOS.add(new TransactionDTO(transaction)));
+        return transactionDTOS;
     }
 }

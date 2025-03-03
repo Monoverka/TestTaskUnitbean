@@ -13,8 +13,8 @@ public class BookController {
     BookService bookService;
 
     @GetMapping("{bookId}")
-    public Books getBook(@PathVariable String bookId) {
-        return bookService.findById(Long.parseLong(bookId));
+    public Books getBook(@PathVariable Long bookId) {
+        return bookService.findById(bookId);
     }
 
     @PostMapping

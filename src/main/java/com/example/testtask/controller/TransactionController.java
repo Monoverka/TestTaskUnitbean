@@ -1,5 +1,6 @@
 package com.example.testtask.controller;
 
+import com.example.testtask.dto.TransactionDTO;
 import com.example.testtask.model.Transactions;
 import com.example.testtask.service.TransactionService;
 import lombok.AllArgsConstructor;
@@ -14,12 +15,12 @@ public class TransactionController {
     TransactionService transactionService;
 
     @GetMapping
-    public List<Transactions> getAll() {
+    public List<TransactionDTO> getAll() {
         return transactionService.findAll();
     }
 
     @GetMapping("{idTransaction}")
-    public Transactions getById(@PathVariable Long idTransaction) {
+    public TransactionDTO getById(@PathVariable Long idTransaction) {
         return transactionService.findById(idTransaction);
     }
 
